@@ -6,7 +6,8 @@ import PauseButton from '../Buttons/PauseButton'
 import SettingsButton from '../Buttons/SettingsButton'
 
 const red = '#f54e4e';
-const green = '4aec8c';
+const green = '#4aec8c';
+const trailColor = 'rgba(255,255,255,0.2)';
 
 function Timer() {
   return (
@@ -14,7 +15,7 @@ function Timer() {
       <CircularProgressbar value={60} text={`${60}%`} styles = {buildStyles({
         textColor:'#fff',
         pathColor: red,
-        tailColor:'rgba(255,255,255,0.2)'
+        trailColor: trailColor
       })} />
       
 
