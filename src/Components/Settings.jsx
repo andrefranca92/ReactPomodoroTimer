@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import BackButton from '../Buttons/BackButton';
 import SettingsContext from './SettingsContext';
 
 function Settings() {
@@ -6,11 +7,11 @@ function Settings() {
   const settingsInfo = useContext(SettingsContext);
 
   return(
-    <form style={{textAlign:'left'}}>
+    <div style={{textAlign:'left'}}>
       <label> Work minutes: </label>
       <input
         type="number"
-        onChange={newValue => settingsInfo.setWorkMinutes(newValue)}
+        onChange={event => settingsInfo.setWorkMinutes(event.target.value)}
         name="workMinutes"
         value={settingsInfo.workMinutes}
       />
@@ -19,12 +20,14 @@ function Settings() {
       <label> Break minutes: </label>
       <input
         type="number"
-        onChange={newValue => settingsInfo.setBreakMinutes(newValue)}
+        onChange={event => settingsInfo.setBreakMinutes(event.target.value)}
         name="breakMinutes"
         value={settingsInfo.breakMinutes}
       />
+
+      <BackButton onClick={() => settingsInfo.setShowSettings(false)}/>
       
-    </form>
+    </div>
   )
 
 }
