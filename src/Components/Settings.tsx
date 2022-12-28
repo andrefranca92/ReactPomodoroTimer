@@ -1,26 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import SettingsContext from './SettingsContext';
 
 function Settings() {
 
-  const [settingsData, setSettingsData] = React.useState(
-    {
-      workMinutes: 25,
-      breakMinutes: 5
+  const settingsInfo = useContext(SettingsContext);
+
+  function handleMinuteInput(event) {
+    console.log(settingsInfo);
+    const {name, value} = event.target
+
+    if (name === "workMinutes") {
+      settingsInfo.setWorkMinutes(value);
     }
-  )
 
-
-  function handleChange(event) {
-    
-    console.log(event)
-    const {name, value, type, checked} = event.target
-
-    setSettingsData(prevSettingsData => {
-      return {
-        ...prevSettingsData,
-        [name]: type === "checkbox" ? checked : value
-      }
-    })
+    else if (name === "breakMinutes") {
+      settingsInfo.setBreakMinutes(value);
+    }
   }
 
   return(
@@ -28,18 +23,18 @@ function Settings() {
       <label> Work minutes: </label>
       <input
         type="number"
-        onChange={handleChange}
+        onChange={handleMinuteInput}
         name="workMinutes"
-        value={settingsData.workMinutes}
+        value={settingsInfo.workMinutes}
       />
       
       <br />
       <label> Break minutes: </label>
       <input
         type="number"
-        onChange={handleChange}
+        onChange={handleMinuteInput}
         name="breakMinutes"
-        value={settingsData.breakMinutes}
+        value={settingsInfo.breakMinutes}
       />
       
     </form>
