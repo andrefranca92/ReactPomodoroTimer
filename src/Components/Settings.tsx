@@ -1,21 +1,48 @@
 import React from 'react'
-import ReactSlider from 'react-slider'
 
 function Settings() {
-  return(
-    <div style={{textAlign:'left'}}>
-      <label> Work minutes: </label>
-      <ReactSlider
-        className="horizontal-slider"
-        thumbClassName="example-thumb"
-        trackClassName="example-track"
-        renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-    />
-      
 
-      <label> Break minutes: </label>
+  const [settingsData, setSettingsData] = React.useState(
+    {
+      workMinutes: 25,
+      breakMinutes: 5
+    }
+  )
+
+
+  function handleChange(event) {
+    
+    console.log(event)
+    const {name, value, type, checked} = event.target
+
+    setSettingsData(prevSettingsData => {
+      return {
+        ...prevSettingsData,
+        [name]: type === "checkbox" ? checked : value
+      }
+    })
+  }
+
+  return(
+    <form style={{textAlign:'left'}}>
+      <label> Work minutes: </label>
+      <input
+        type="number"
+        onChange={handleChange}
+        name="workMinutes"
+        value={settingsData.workMinutes}
+      />
       
-    </div>
+      <br />
+      <label> Break minutes: </label>
+      <input
+        type="number"
+        onChange={handleChange}
+        name="breakMinutes"
+        value={settingsData.breakMinutes}
+      />
+      
+    </form>
   )
 
 }
