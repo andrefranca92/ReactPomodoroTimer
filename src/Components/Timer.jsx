@@ -1,12 +1,13 @@
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-import { useContext } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 
 import PlayButton from '../Buttons/PlayButton'
 import PauseButton from '../Buttons/PauseButton'
 import SettingsButton from '../Buttons/SettingsButton'
 import SettingsContext from './SettingsContext';
+import { isNoSubstitutionTemplateLiteral } from 'typescript';
 
 const red = '#f54e4e';
 const green = '#4aec8c';
@@ -15,19 +16,79 @@ const trailColor = 'rgba(255,255,255,0.2)';
 function Timer() {
 
   const settingsInfo = useContext(SettingsContext)
+  const [isPaused, setIsPaused] = useState(true);
+  const [mode, setMode] = useState('work'); //work/break/null
+  const [secondsLeft, setSecondsLeft] = useState(0);
+
+  const secondsLeftRef = useRef(secondsLeft);
+  const isPausedRef = useRef(isPaused);
+  const modeRef = useRef(mode);
+
+  //
+  function initTimer() {
+    setSecondsLeft(settingsInfo.workMinutes * 60);
+  }
+
+  //
+  function switchMode() {
+    const nextMode = modeRef.current === 'work' ? 'break' : 'work'
+    const nextSeconds = (mode === 'work' ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60
+
+    setMode(nextMode)
+    modeRef.current = nextMode;
+    
+    setSecondsLeft(nextSeconds)
+    secondsLeftRef.current = secondsLeft;
+  }
+
+  //
+  function tick() {
+    secondsLeftRef.current--
+    setSecondsLeft(secondsLeftRef.current)
+  }
+
+  //
+  useEffect(() => {
+    
+    initTimer();
+    const interval = setInterval(() => {
+      
+      if(isPausedRef.current) 
+        return
+
+      if (secondsLeftRef.current === 0) 
+        return switchMode()
+
+      tick();
+
+    }, 1000)
+
+    return () => clearInterval(interval);
+
+  }, [settingsInfo])
+
+
+const totalSeconds = (mode === 'work' ? settingsInfo.workMinutes * 60 : settingsInfo.breakMinutes * 60)
+const percentage = Math.round(secondsLeft / totalSeconds) * 100
+
+const minutes = Math.floor(secondsLeft / 60)
+let seconds = secondsLeft % 60
+if (seconds < 10) seconds = '0' + seconds
 
   return (
     <div>
-      <CircularProgressbar value={60} text={`${60}%`} styles = {buildStyles({
-        textColor:'#fff',
-        pathColor: red,
-        trailColor: trailColor
+      <CircularProgressbar 
+        value={percentage} 
+        text={minutes + ':' + seconds} 
+        styles = {buildStyles({
+          textColor:'#fff',
+          pathColor: red,
+          trailColor: trailColor
       })} />
       
 
       <div style={{marginTop:'20px'}}>
-        <PlayButton />
-        <PauseButton />
+        {isPaused ? <PlayButton /> : <PauseButton />}
       </div>
 
       <div style={{marginTop:'20px'}}>
