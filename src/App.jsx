@@ -1,4 +1,4 @@
-import './App.css'
+import './Styles/Global.css'
 
 import Timer from './Components/Timer'
 import Settings from './Components/Settings'
