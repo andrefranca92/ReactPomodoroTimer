@@ -7,7 +7,6 @@ import PlayButton from '../Buttons/PlayButton'
 import PauseButton from '../Buttons/PauseButton'
 import SettingsButton from '../Buttons/SettingsButton'
 import SettingsContext from './SettingsContext';
-import { isNoSubstitutionTemplateLiteral } from 'typescript';
 
 const red = '#f54e4e';
 const green = '#4aec8c';
@@ -16,6 +15,7 @@ const trailColor = 'rgba(255,255,255,0.2)';
 function Timer() {
 
   const settingsInfo = useContext(SettingsContext)
+
   const [isPaused, setIsPaused] = useState(true);
   const [mode, setMode] = useState('work'); //work/break/null
   const [secondsLeft, setSecondsLeft] = useState(0);
@@ -24,40 +24,45 @@ function Timer() {
   const isPausedRef = useRef(isPaused);
   const modeRef = useRef(mode);
 
-  //
+  // Initialize timer with the settings value
   function initTimer() {
-    setSecondsLeft(settingsInfo.workMinutes * 60);
-  }
+    setSecondsLeft((mode === 'work' ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60);
+  } 
 
-  //
-  function switchMode() {
-    const nextMode = modeRef.current === 'work' ? 'break' : 'work'
-    const nextSeconds = (mode === 'work' ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60
-
-    setMode(nextMode)
-    modeRef.current = nextMode;
-    
-    setSecondsLeft(nextSeconds)
-    secondsLeftRef.current = secondsLeft;
-  }
-
-  //
+  // Decrements 1 second
   function tick() {
     secondsLeftRef.current--
     setSecondsLeft(secondsLeftRef.current)
   }
 
-  //
+  // ???
   useEffect(() => {
     
-    initTimer();
+    //Switches to the next mode: work -> break, break -> work
+    function switchMode() {
+      const nextMode = modeRef.current === 'work' ? 'break' : 'work'
+      const nextSeconds = (mode === 'work' ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60
+  
+      setMode(nextMode)
+      modeRef.current = nextMode;
+      
+      setSecondsLeft(nextSeconds)
+      secondsLeftRef.current = secondsLeft;
+    }
+
+    secondsLeftRef.current = (mode === 'work' ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60;
+    setSecondsLeft(secondsLeftRef.current)
+
+    // runs at an interval of 1 second
     const interval = setInterval(() => {
       
-      if(isPausedRef.current) 
+      if(isPausedRef.current) {
         return
-
-      if (secondsLeftRef.current === 0) 
+      }
+      
+      if (secondsLeftRef.current === 0) {
         return switchMode()
+      }
 
       tick();
 
@@ -67,28 +72,34 @@ function Timer() {
 
   }, [settingsInfo])
 
+  // Sets percentage
+  const totalSeconds = (mode === 'work' ? settingsInfo.workMinutes * 60 : settingsInfo.breakMinutes * 60)
+  const percentage = Math.round(secondsLeft / totalSeconds * 100)
 
-const totalSeconds = (mode === 'work' ? settingsInfo.workMinutes * 60 : settingsInfo.breakMinutes * 60)
-const percentage = Math.round(secondsLeft / totalSeconds) * 100
-
-const minutes = Math.floor(secondsLeft / 60)
-let seconds = secondsLeft % 60
-if (seconds < 10) seconds = '0' + seconds
+  // Sets timer text
+  const minutes = Math.floor(secondsLeft / 60)
+  let seconds = secondsLeft % 60
+  if (seconds < 10) seconds = '0' + seconds
 
   return (
     <div>
+
+      <p> {mode} </p>
+      <p> {percentage} %</p>
       <CircularProgressbar 
         value={percentage} 
         text={minutes + ':' + seconds} 
         styles = {buildStyles({
           textColor:'#fff',
-          pathColor: red,
+          pathColor: mode === 'work' ? red : green,
           trailColor: trailColor
       })} />
       
-
       <div style={{marginTop:'20px'}}>
-        {isPaused ? <PlayButton /> : <PauseButton />}
+        {isPaused 
+          ? <PlayButton onClick={() => { setIsPaused(false); isPausedRef.current = false}}/> 
+          : <PauseButton onClick={() => { setIsPaused(true); isPausedRef.current = true}}/>
+        }
       </div>
 
       <div style={{marginTop:'20px'}}>
