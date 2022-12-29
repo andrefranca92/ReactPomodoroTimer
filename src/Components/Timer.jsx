@@ -84,8 +84,12 @@ function Timer() {
   return (
     <div>
 
-      <p> {mode} </p>
-      <p> {percentage} %</p>
+      <h1 className='text-4xl font-bold text-center leading-loose'> Pomodoro Timer </h1>
+      <div className='text-l text-center uppercase'> 
+        <p> {mode} time </p>
+        <p> {percentage}% </p>
+      </div>
+
       <CircularProgressbar 
         value={percentage} 
         text={minutes + ':' + seconds} 
