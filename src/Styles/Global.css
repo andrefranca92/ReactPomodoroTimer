@@ -6,3 +6,44 @@
   background-color: #1e293b;
   color: #f8fafc;
 }
+
+button {
+  background-color: #334155;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  border-radius: 1rem;
+}
+
+button:hover {
+  background-color: #94a3b8;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+input {
+  text-align: right;
+  border-radius: 1rem;
+  background-color: #334155;
+  padding: 0.1rem 1rem;
+  width: 5rem;
+}
+
+input:focus {
+  background-color: #94a3b8;
+  transition: 0.2s;
+  border: none;
+}
+
+
+/*Removing arrows / spinners */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

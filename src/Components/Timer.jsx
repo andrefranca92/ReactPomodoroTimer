@@ -8,9 +8,9 @@ import PauseButton from '../Buttons/PauseButton'
 import SettingsButton from '../Buttons/SettingsButton'
 import SettingsContext from './SettingsContext';
 
-const red = '#f54e4e';
-const green = '#4aec8c';
-const trailColor = 'rgba(255,255,255,0.2)';
+const red = '#ef4444';
+const green = '#22c55e';
+const trailColor = '#334155';
 
 function Timer() {
 
@@ -85,28 +85,30 @@ function Timer() {
     <div>
 
       <h1 className='text-4xl font-bold text-center leading-loose'> Pomodoro Timer </h1>
-      <div className='text-l text-center uppercase'> 
+      <div className='text-l text-center uppercase p-1'> 
         <p> {mode} time </p>
         <p> {percentage}% </p>
       </div>
 
-      <CircularProgressbar 
-        value={percentage} 
-        text={minutes + ':' + seconds} 
-        styles = {buildStyles({
-          textColor:'#000',
-          pathColor: mode === 'work' ? red : green,
-          trailColor: trailColor
-      })} />
+      <div className='p-12 max-w-xl block m-auto'>
+        <CircularProgressbar 
+          value={percentage} 
+          text={minutes + ':' + seconds} 
+          styles = {buildStyles({
+            textColor:'#fff',
+            pathColor: mode === 'work' ? red : green,
+            trailColor: trailColor
+        })} />
+      </div>
       
-      <div style={{marginTop:'20px'}}>
+      <div className='p-2 text-center'>
         {isPaused 
           ? <PlayButton onClick={() => { setIsPaused(false); isPausedRef.current = false}}/> 
           : <PauseButton onClick={() => { setIsPaused(true); isPausedRef.current = true}}/>
         }
       </div>
 
-      <div style={{marginTop:'20px'}}>
+      <div className='p-2 text-center'>
         <SettingsButton onClick={() => settingsInfo.setShowSettings(true)} />
       </div>
 
